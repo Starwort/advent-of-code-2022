@@ -30,7 +30,7 @@ def part_one():
 
 
 def part_two():
-    return data.mapped(lambda l: l.sum()).sorted(reverse=True)[:3].sum()
+    return data.mapped(lambda l: l.sum()).nlargest(3).sum()
 
 
 aoc_helper.lazy_submit(day=1, year=2022, solution=part_one)
