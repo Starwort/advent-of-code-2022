@@ -19,15 +19,13 @@ raw = aoc_helper.fetch(3, 2022)
 
 
 def parse_raw():
-    return list(raw.splitlines()).mapped(
-        lambda l: list(l).mapped(
-            lambda i: (
-                (ord(i) - ord("a"))
-                if i in string.ascii_lowercase
-                else (ord(i) - ord("A") + 26)
-            )
-            + 1
+    return list(raw.splitlines()).mapped_each(
+        lambda i: (
+            (ord(i) - ord("a"))
+            if i in string.ascii_lowercase
+            else (ord(i) - ord("A") + 26)
         )
+        + 1
     )
 
 
