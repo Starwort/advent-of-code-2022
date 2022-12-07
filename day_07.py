@@ -1,4 +1,5 @@
 import collections
+import typing
 
 import aoc_helper
 from aoc_helper import (
@@ -38,6 +39,9 @@ def cd(current, filesystem, to):
         return current.removesuffix("/") + "/" + to, get(
             filesystem, current.removesuffix("/") + "/" + to
         )
+
+
+Folder = dict[str, typing.Union[int, "Folder"]]
 
 
 def parse_raw():
