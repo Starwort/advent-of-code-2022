@@ -46,7 +46,7 @@ def parse_raw():
     dir = filesystem
     for line in raw.splitlines():
         if line.startswith("$"):
-            _, command, *args = line.split()
+            _, command, *args = line.split(" ", 2)
             if command == "cd":
                 cwd, dir = cd(cwd, filesystem, *args)
             else:
