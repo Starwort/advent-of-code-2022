@@ -78,13 +78,13 @@ def count_files(sums, my_name, filesystem):
     return sum
 
 
-def part_one():
+def part_one(data: Folder):
     sizes = {}
     count_files(sizes, "", data)
     return list(sizes.values()).filtered(lambda i: i <= 100000).sum()
 
 
-def part_two():
+def part_two(data: Folder):
     max_used = 70000000 - 30000000
     sizes = {}
     to_free = count_files(sizes, "", data) - max_used
@@ -93,5 +93,5 @@ def part_two():
     return list(sizes.values()).filtered(lambda i: i >= to_free).min()
 
 
-aoc_helper.lazy_submit(day=7, year=2022, solution=part_one)
-aoc_helper.lazy_submit(day=7, year=2022, solution=part_two)
+aoc_helper.lazy_submit(day=7, year=2022, solution=part_one, data=data)
+aoc_helper.lazy_submit(day=7, year=2022, solution=part_two, data=data)

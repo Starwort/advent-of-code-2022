@@ -23,14 +23,14 @@ def parse_raw():
 data = parse_raw()
 
 
-def part_one():
+def part_one(data: list[str]):
     return (
         raw.index("".join(data.windowed(4).filtered(lambda i: len(set(i)) == 4).find()))
         + 4
     )
 
 
-def part_two():
+def part_two(data: list[str]):
     return (
         raw.index(
             "".join(data.windowed(14).filtered(lambda i: len(set(i)) == 14).find())
@@ -39,5 +39,5 @@ def part_two():
     )
 
 
-aoc_helper.lazy_submit(day=6, year=2022, solution=part_one)
-aoc_helper.lazy_submit(day=6, year=2022, solution=part_two)
+aoc_helper.lazy_submit(day=6, year=2022, solution=part_one, data=data)
+aoc_helper.lazy_submit(day=6, year=2022, solution=part_two, data=data)
