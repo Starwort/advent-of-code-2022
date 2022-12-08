@@ -32,7 +32,7 @@ def parse_raw():
 data = parse_raw()
 
 
-def part_one():
+def part_one(data):
     crates, moves = data
     crates = crates.deepcopy()
     for (n, from_, to) in moves:
@@ -41,7 +41,7 @@ def part_one():
     return "".join(stack[-1] for stack in crates)
 
 
-def part_two():
+def part_two(data):
     crates, moves = data
     crates = crates.deepcopy()
     for (n, from_, to) in moves:
@@ -50,5 +50,5 @@ def part_two():
     return "".join(stack[-1] for stack in crates)
 
 
-aoc_helper.lazy_submit(day=5, year=2022, solution=part_one)
-aoc_helper.lazy_submit(day=5, year=2022, solution=part_two)
+aoc_helper.lazy_submit(day=5, year=2022, solution=part_one, data=data)
+aoc_helper.lazy_submit(day=5, year=2022, solution=part_two, data=data)

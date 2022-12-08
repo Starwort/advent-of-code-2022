@@ -27,7 +27,7 @@ def parse_raw():
 data = parse_raw()
 
 
-def part_one():
+def part_one(data):
     score = 0
     for move, resp in data:
         score += " XYZ".index(resp)
@@ -36,7 +36,7 @@ def part_one():
     return score
 
 
-def part_two():
+def part_two(data):
     score = 0
     for move, outcome in data:
         if outcome == "X":
@@ -51,5 +51,5 @@ def part_two():
     return score
 
 
-aoc_helper.lazy_submit(day=2, year=2022, solution=part_one)
-aoc_helper.lazy_submit(day=2, year=2022, solution=part_two)
+aoc_helper.lazy_submit(day=2, year=2022, solution=part_one, data=data)
+aoc_helper.lazy_submit(day=2, year=2022, solution=part_two, data=data)

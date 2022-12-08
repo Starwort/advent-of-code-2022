@@ -39,11 +39,11 @@ def process_sack(sack):
             return i
 
 
-def part_one():
+def part_one(data):
     return data.mapped(process_sack).sum()
 
 
-def part_two():
+def part_two(data):
     groups = data.chunked(3)
     sum = 0
     for first, second, third in groups:
@@ -54,5 +54,5 @@ def part_two():
     return sum
 
 
-aoc_helper.lazy_submit(day=3, year=2022, solution=part_one)
-aoc_helper.lazy_submit(day=3, year=2022, solution=part_two)
+aoc_helper.lazy_submit(day=3, year=2022, solution=part_one, data=data)
+aoc_helper.lazy_submit(day=3, year=2022, solution=part_two, data=data)

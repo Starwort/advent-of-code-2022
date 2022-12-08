@@ -16,20 +16,25 @@ from aoc_helper import (
 raw = aoc_helper.fetch(25, 2022)
 
 
-def parse_raw():
+def parse_raw(raw):
     ...
 
 
-data = parse_raw()
+data = parse_raw(raw)
 
 
-def part_one():
+def part_one(data):
     ...
 
 
-def part_two():
+aoc_helper.lazy_test(day=25, year=2022, parse=parse_raw, solution=part_one)
+
+
+def part_two(data):
     ...
 
 
-aoc_helper.lazy_submit(day=25, year=2022, solution=part_one)
-aoc_helper.lazy_submit(day=25, year=2022, solution=part_two)
+aoc_helper.lazy_test(day=25, year=2022, parse=parse_raw, solution=part_two)
+
+aoc_helper.lazy_submit(day=25, year=2022, solution=part_one, data=data)
+aoc_helper.lazy_submit(day=25, year=2022, solution=part_two, data=data)

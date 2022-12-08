@@ -27,7 +27,7 @@ def parse_raw():
 data = parse_raw()
 
 
-def part_one():
+def part_one(data):
     count = 0
     for a, b in data:
         if a[0] >= b[0] and a[1] <= b[1]:
@@ -37,7 +37,7 @@ def part_one():
     return count
 
 
-def part_two():
+def part_two(data):
     count = 0
     for a, b in data:
         if b[0] <= a[0] <= b[1]:
@@ -47,5 +47,5 @@ def part_two():
     return count
 
 
-aoc_helper.lazy_submit(day=4, year=2022, solution=part_one)
-aoc_helper.lazy_submit(day=4, year=2022, solution=part_two)
+aoc_helper.lazy_submit(day=4, year=2022, solution=part_one, data=data)
+aoc_helper.lazy_submit(day=4, year=2022, solution=part_two, data=data)

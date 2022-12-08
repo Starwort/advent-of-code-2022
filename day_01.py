@@ -1,3 +1,4 @@
+import typing
 from collections import Counter
 
 import aoc_helper
@@ -22,16 +23,23 @@ def parse_raw():
     return list(raw.split("\n\n")).mapped(extract_ints)
 
 
+T = typing.TypeVar("T")
+
+
+def typeof(val: T) -> type[T]:
+    return type(val)
+
+
 data = parse_raw()
 
 
-def part_one():
+def part_one(data):
     return data.mapped(lambda l: l.sum()).max()
 
 
-def part_two():
+def part_two(data):
     return data.mapped(lambda l: l.sum()).nlargest(3).sum()
 
 
-aoc_helper.lazy_submit(day=1, year=2022, solution=part_one)
-aoc_helper.lazy_submit(day=1, year=2022, solution=part_two)
+aoc_helper.lazy_submit(day=1, year=2022, solution=part_one, data=data)
+aoc_helper.lazy_submit(day=1, year=2022, solution=part_two, data=data)
