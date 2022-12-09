@@ -34,17 +34,14 @@ def part_one(data: Grid[int]):
                 or row[x + 1 :].max() < height
             ):
                 visible[y][x] = True
-    for x in range(len(data.data[0])):
-        for y in range(len(data.data)):
-            for y_ in range(y):
-                if data[y_][x] >= data[y][x]:
-                    break
-            else:
-                visible[y][x] = True
-            for y_ in range(y + 1, len(data.data)):
-                if data[y_][x] >= data[y][x]:
-                    break
-            else:
+    for x, row in enumerate(data.transpose().data):
+        for y, height in enumerate(row):
+            if (
+                not row[:x]
+                or row[:x].max() < height
+                or not row[x + 1 :]
+                or row[x + 1 :].max() < height
+            ):
                 visible[y][x] = True
     return visible.mapped(sum).sum()
 
