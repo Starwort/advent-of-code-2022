@@ -63,7 +63,7 @@ def part_one(data):
     return len(visited)
 
 
-# aoc_helper.lazy_test(day=9, year=2022, parse=parse_raw, solution=part_one)
+aoc_helper.lazy_test(day=9, year=2022, parse=parse_raw, solution=part_one)
 
 
 def part_two(data):
@@ -80,7 +80,7 @@ def part_two(data):
     return len(visited)
 
 
-# aoc_helper.lazy_test(day=9, year=2022, parse=parse_raw, solution=part_two)
+aoc_helper.lazy_test(day=9, year=2022, parse=parse_raw, solution=part_two)
 
 aoc_helper.lazy_submit(day=9, year=2022, solution=part_one, data=data)
 aoc_helper.lazy_submit(day=9, year=2022, solution=part_two, data=data)
