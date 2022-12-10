@@ -18,9 +18,15 @@ class Computer:
 
     def run(self):
         while self.ip < len(self.tape):
-            instruction, *args = self.tape[self.ip]
+            instruction = self.tape[self.ip]
             self.ip += 1
-            yield from getattr(self, instruction)(*map(int, args))
+            match instruction:
+                case ("addx", n):
+                    yield from self.addx(int(n))
+                case ("noop",):
+                    yield from self.noop()
+                case _:
+                    raise ValueError(f"Unknown instruction {instruction}")
 
     def copy(self):
         out = Computer("", self.x)
