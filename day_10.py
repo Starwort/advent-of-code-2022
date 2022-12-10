@@ -178,18 +178,16 @@ def part_one(data):
         if i:
             cycles += 2
             if cycles in [20, 21, 60, 61, 100, 101, 140, 141, 180, 181, 220, 221]:
-                print(total, cycles, X, X * (cycles // 2) * 2)
                 total += X * (cycles // 2) * 2
             X += i[0]
         else:
             cycles += 1
             if cycles in [20, 60, 100, 140, 180, 220]:
-                print(total, cycles, X, X * cycles)
                 total += X * cycles
     return total
 
 
-# aoc_helper.lazy_test(day=10, year=2022, parse=parse_raw, solution=part_one)
+aoc_helper.lazy_test(day=10, year=2022, parse=parse_raw, solution=part_one)
 
 
 def part_two(data):
@@ -216,7 +214,7 @@ def part_two(data):
 
 
 # part_two(parse_raw(test))
-# aoc_helper.lazy_test(day=10, year=2022, parse=parse_raw, solution=part_two)
+aoc_helper.lazy_test(day=10, year=2022, parse=parse_raw, solution=part_two)
 
 aoc_helper.lazy_submit(day=10, year=2022, solution=part_one, data=data)
 aoc_helper.lazy_submit(day=10, year=2022, solution=part_two, data=data)
