@@ -193,7 +193,7 @@ def part_one(data):
 
 
 def part_two(data):
-    output = Grid(list(list(False for _ in range(40)) for _ in range(6)))
+    output = Grid[bool](list(list(False for _ in range(40)) for _ in range(6)))
     cycles = 0
     X = 1
     for i in data:
@@ -212,7 +212,7 @@ def part_two(data):
             if abs(x - X) <= 1:
                 output[y][x] = True
             cycles += 1
-    print(output)
+    return output.decode_as_text()
 
 
 # part_two(parse_raw(test))
