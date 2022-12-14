@@ -4,6 +4,7 @@ import aoc_helper
 from aoc_helper import (
     Grid,
     PrioQueue,
+    SparseGrid,
     decode_text,
     extract_ints,
     frange,
@@ -51,36 +52,54 @@ def place_grain(graph, bottom, left, right, p2=False):
 
 
 def part_one(data):
-    graph = defaultdict(int)
+    return list(get_part_one_graph(data).values()).count(2)
+
+
+def get_part_one_graph(data):
+    graph = SparseGrid(int)
     for path in data:
-        for (fx, fy), (tx, ty) in path.windowed(2):
-            for y in irange(fy, ty):
-                for x in irange(fx, tx):
-                    graph[(x, y)] = 1
-    left = min([x for x, y in graph])
-    right = max([x for x, y in graph])
-    bottom = max([y for x, y in graph])
+        graph.draw_lines(path, 1)
+    left, _, right, bottom = graph.bounds([0])
     while not place_grain(graph, bottom, left, right):
         pass
-    return list(graph.values()).count(2)
+    return graph
 
 
 aoc_helper.lazy_test(day=14, year=2022, parse=parse_raw, solution=part_one)
 
 
 def part_two(data):
-    graph = defaultdict(int)
+    return list(get_part_two_graph(data).values()).count(2)
+
+
+def get_part_two_graph(data) -> SparseGrid[int]:
+    graph = SparseGrid(int)
     for path in data:
-        for (fx, fy), (tx, ty) in path.windowed(2):
-            for y in irange(fy, ty):
-                for x in irange(fx, tx):
-                    graph[(x, y)] = 1
-    left = min([x for x, y in graph])
-    right = max([x for x, y in graph])
-    bottom = max([y for x, y in graph])
+        graph.draw_lines(path, 1)
+    left, _, right, bottom = graph.bounds([0])
     while graph[500, 0] == 0:
         place_grain(graph, bottom, left, right, p2=True)
-    return list(graph.values()).count(2)
+    return graph
+
+
+def create_text_graphs(data):
+    p1_graph = get_part_one_graph(data)
+    p2_graph = get_part_two_graph(data)
+    p1_graph[500, 0]
+    p2_graph[500, 0]
+    import sys
+    from io import StringIO
+
+    old_stdout = sys.stdout
+    sys.stdout = p1_out = StringIO()
+    p1_graph.pretty_print(lambda i: " █⣿"[i], [0])
+    sys.stdout = p2_out = StringIO()
+    p2_graph.pretty_print(lambda i: " █⣿"[i], [0])
+    sys.stdout = old_stdout
+    with open("14p1.txt", "w") as f:
+        f.write(p1_out.getvalue())
+    with open("14p2.txt", "w") as f:
+        f.write(p2_out.getvalue())
 
 
 aoc_helper.lazy_test(day=14, year=2022, parse=parse_raw, solution=part_two)
