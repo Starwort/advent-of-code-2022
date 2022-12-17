@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::time::Instant;
 
 use array_macro::array;
 use text_io::scan;
@@ -161,8 +162,14 @@ fn part_two(dp_table: &[Vec<Vec<Option<usize>>>; 31]) -> usize {
 }
 
 fn main() {
+    let start = Instant::now();
     let input = parse_input();
+    println!("[{}µs] Parsed input", start.elapsed().as_micros());
     let (dp_table, ans_one) = part_one(&input.0, input.1);
-    println!("{ans_one}");
-    println!("{}", part_two(&dp_table));
+    println!("[{}ms] Part one: {}", start.elapsed().as_millis(), ans_one);
+    println!(
+        "[{}ms] Part two: {}",
+        start.elapsed().as_millis(),
+        part_two(&dp_table)
+    );
 }
