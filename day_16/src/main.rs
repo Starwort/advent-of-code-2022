@@ -150,7 +150,18 @@ fn part_two(dp_table: &[Vec<Vec<Option<usize>>>; 31]) -> usize {
     let n_nonzero = dp_table[0].len();
     let answer = AtomicUsize::new(0);
     (0..(1 << n_nonzero)).into_par_iter().for_each(|i| {
-        for j in (0..(1 << n_nonzero)).filter(|&j| i & j != j) {
+        let mut j = 0;
+        while {
+            // increase j to the next value that doesn't intersect with i
+            // technically this is making an assumption that the elephant
+            // shouldn't do nothing but that seems like a reasonable
+            // assumption to make
+            j += 1;
+            while j & i != 0 {
+                j += j & i;
+            }
+            j < (1 << n_nonzero)
+        } {
             let Some(a) = dp_table[26].iter().filter_map(|x| x[j]).max() else {
                 continue;
             };
@@ -170,5 +181,5 @@ fn main() {
     let (dp_table, ans_one) = part_one(&input.0, input.1);
     println!("[{}ms] Part one: {}", start.elapsed().as_millis(), ans_one);
     let ans_two = part_two(&dp_table);
-    println!("[{}s] Part two: {}", start.elapsed().as_secs(), ans_two);
+    println!("[{}ms] Part two: {}", start.elapsed().as_millis(), ans_two);
 }
