@@ -1,4 +1,3 @@
-use std::collections::HashMap;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::time::Instant;
 
@@ -81,17 +80,18 @@ fn part_one(
     start: usize,
 ) -> ([Vec<Vec<Option<usize>>>; 31], usize) {
     let n_nonzero = data.iter().filter(|(rate, _)| *rate != 0).count();
-    let mut pairwise_distances = HashMap::with_capacity(n_nonzero * n_nonzero);
-    for i in 0..data.len() {
-        for j in 0..data.len() {
-            pairwise_distances.insert((i, j), pathfind(i, j, data));
+    let mut pairwise_distances = vec![0; data.len() * n_nonzero];
+    for from in 0..data.len() {
+        for to in 0..n_nonzero {
+            pairwise_distances[from * n_nonzero + to] = pathfind(from, to, data);
         }
     }
     let pairwise_distances = pairwise_distances;
     let mut dp_table = array![vec![vec![None; 1 << n_nonzero]; n_nonzero]; 31];
     for (i, (rate, _)) in data.iter().enumerate() {
         if *rate != 0 {
-            dp_table[pairwise_distances[&(start, i)] + 1][i][1 << i] = Some(*rate);
+            dp_table[pairwise_distances[start * n_nonzero + i] + 1][i][1 << i] =
+                Some(*rate);
         }
     }
     let mut flow = Vec::<usize>::with_capacity(1 << n_nonzero);
@@ -125,7 +125,7 @@ fn part_one(
                 if let Some(current) = dp_table[i][j][k] {
                     for l in (0..n_nonzero).filter(|l| k & (1 << l) == 0) {
                         let next = k | (1 << l);
-                        let dist = pairwise_distances[&(j, l)];
+                        let dist = pairwise_distances[j * n_nonzero + l];
                         if i + dist > 29 {
                             continue;
                         }
