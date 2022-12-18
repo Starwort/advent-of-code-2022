@@ -1,3 +1,4 @@
+use std::ops::{Index, IndexMut};
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::time::Instant;
 
@@ -75,23 +76,72 @@ fn pathfind(a: usize, b: usize, data: &[(usize, Vec<usize>)]) -> usize {
     unreachable!()
 }
 
+#[derive(Clone)]
+struct Grid<T> {
+    data: Vec<T>,
+    width: usize,
+}
+impl<T> Grid<T> {
+    fn new(width: usize, height: usize, default: T) -> Self
+    where
+        T: Copy,
+    {
+        Self {
+            data: vec![default; width * height],
+            width,
+        }
+    }
+
+    fn new_factory(
+        width: usize,
+        height: usize,
+        factory: impl Fn(usize, usize) -> T,
+    ) -> Self {
+        Self {
+            data: (0..width * height)
+                .map(|i| factory(i % width, i / width))
+                .collect(),
+            width,
+        }
+    }
+
+    fn flat(&self) -> &[T] {
+        &self.data
+    }
+
+    fn width(&self) -> usize {
+        self.width
+    }
+}
+impl<T> Index<(usize, usize)> for Grid<T> {
+    type Output = T;
+
+    fn index(&self, (x, y): (usize, usize)) -> &Self::Output {
+        &self.data[y * self.width + x]
+    }
+}
+impl<T> IndexMut<(usize, usize)> for Grid<T> {
+    fn index_mut(&mut self, (x, y): (usize, usize)) -> &mut Self::Output {
+        &mut self.data[y * self.width + x]
+    }
+}
+
 fn part_one(
     data: &[(usize, Vec<usize>)],
     start: usize,
-) -> ([Vec<Vec<Option<usize>>>; 31], usize) {
+) -> ([Grid<Option<usize>>; 31], usize) {
     let n_nonzero = data.iter().filter(|(rate, _)| *rate != 0).count();
-    let mut pairwise_distances = vec![0; data.len() * n_nonzero];
+    let mut pairwise_distances = Grid::new(n_nonzero, data.len(), 0);
     for from in 0..data.len() {
         for to in 0..n_nonzero {
-            pairwise_distances[from * n_nonzero + to] = pathfind(from, to, data);
+            pairwise_distances[(from, to)] = pathfind(from, to, data);
         }
     }
     let pairwise_distances = pairwise_distances;
-    let mut dp_table = array![vec![vec![None; 1 << n_nonzero]; n_nonzero]; 31];
+    let mut dp_table = array![Grid::new(n_nonzero, 1<<n_nonzero, None); 31];
     for (i, (rate, _)) in data.iter().enumerate() {
         if *rate != 0 {
-            dp_table[pairwise_distances[start * n_nonzero + i] + 1][i][1 << i] =
-                Some(*rate);
+            dp_table[pairwise_distances[(start, i)] + 1][(i, 1 << i)] = Some(*rate);
         }
     }
     let mut flow = Vec::<usize>::with_capacity(1 << n_nonzero);
@@ -108,13 +158,13 @@ fn part_one(
     for i in 1..31 {
         for j in 0..n_nonzero {
             for (k, flow) in flow.iter().enumerate() {
-                if let Some(prev) = dp_table[i - 1][j][k] {
+                if let Some(prev) = dp_table[i - 1][(j, k)] {
                     let if_stay = prev + flow;
                     #[allow(clippy::match_on_vec_items)]
-                    match dp_table[i][j][k] {
+                    match dp_table[i][(j, k)] {
                         Some(x) if x > if_stay => (),
                         _ => {
-                            dp_table[i][j][k] = Some(if_stay);
+                            dp_table[i][(j, k)] = Some(if_stay);
                             answer = answer.max(if_stay);
                         },
                     }
@@ -122,19 +172,19 @@ fn part_one(
                 if k & (1 << j) == 0 {
                     continue;
                 }
-                if let Some(current) = dp_table[i][j][k] {
+                if let Some(current) = dp_table[i][(j, k)] {
                     for l in (0..n_nonzero).filter(|l| k & (1 << l) == 0) {
                         let next = k | (1 << l);
-                        let dist = pairwise_distances[j * n_nonzero + l];
+                        let dist = pairwise_distances[(j, l)];
                         if i + dist > 29 {
                             continue;
                         }
                         let if_go = current + flow * (dist + 1);
                         #[allow(clippy::match_on_vec_items)]
-                        match dp_table[i][l][next] {
+                        match dp_table[i][(l, next)] {
                             Some(x) if x > if_go => (),
                             _ => {
-                                dp_table[i][l][next] = Some(if_go);
+                                dp_table[i][(l, next)] = Some(if_go);
                                 answer = answer.max(if_go);
                             },
                         }
@@ -146,8 +196,8 @@ fn part_one(
     (dp_table, answer)
 }
 
-fn part_two(dp_table: &[Vec<Vec<Option<usize>>>; 31]) -> usize {
-    let n_nonzero = dp_table[0].len();
+fn part_two(dp_table: &[Grid<Option<usize>>; 31]) -> usize {
+    let n_nonzero = dp_table[0].width();
     let answer = AtomicUsize::new(0);
     (0..(1 << n_nonzero)).into_par_iter().for_each(|i| {
         let mut j = 0;
@@ -162,10 +212,11 @@ fn part_two(dp_table: &[Vec<Vec<Option<usize>>>; 31]) -> usize {
             }
             j < (1 << n_nonzero)
         } {
-            let Some(a) = dp_table[26].iter().filter_map(|x| x[j]).max() else {
+            let entry = &dp_table[26];
+            let Some(a) = (0..n_nonzero).filter_map(|k|entry[(k, i)]).max() else {
                 continue;
             };
-            let Some(b) = dp_table[26].iter().filter_map(|x| x[i & !j]).max() else {
+            let Some(b) = (0..n_nonzero).filter_map(|k|entry[(k, j)]).max() else {
                 continue;
             };
             answer.fetch_max(a + b, Ordering::Relaxed);
