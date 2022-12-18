@@ -1,3 +1,4 @@
+use std::fmt::Display;
 use std::ops::{Index, IndexMut};
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::time::Instant;
@@ -113,6 +114,22 @@ impl<T> Grid<T> {
         self.width
     }
 }
+
+impl<T: Display> Display for Grid<T> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        for row in self.data.chunks(self.width) {
+            writeln!(
+                f,
+                "{}",
+                row.iter()
+                    .map(|i| format!("{i:2}"))
+                    .collect::<Vec<_>>()
+                    .join(" ")
+            )?;
+        }
+        Ok(())
+    }
+}
 impl<T> Index<(usize, usize)> for Grid<T> {
     type Output = T;
 
@@ -142,22 +159,21 @@ fn part_one(
         }
     }
     let pairwise_distances = pairwise_distances;
+    print!("{pairwise_distances}");
     let mut dp_table = array![Grid::new(n_nonzero, 1<<n_nonzero, None); 31];
     for (i, (rate, _)) in data.iter().enumerate() {
         if *rate != 0 {
             dp_table[pairwise_distances[(start, i)] + 1][(i, 1 << i)] = Some(*rate);
         }
     }
-    let mut flow = Vec::<usize>::with_capacity(1 << n_nonzero);
-    for x in 0..(1 << n_nonzero) {
-        flow.push(
+    let flow: Vec<_> = (0..(1 << n_nonzero))
+        .map(|x| {
             (0..n_nonzero)
                 .filter(|i| x & (1 << i) != 0)
                 .map(|i| data[i].0)
-                .sum(),
-        );
-    }
-    let flow = flow;
+                .sum()
+        })
+        .collect();
     let mut answer = 0;
     for i in 1..31 {
         for j in 0..n_nonzero {
