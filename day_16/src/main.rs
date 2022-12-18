@@ -167,9 +167,6 @@ fn main() {
     println!("[{}µs] Parsed input", start.elapsed().as_micros());
     let (dp_table, ans_one) = part_one(&input.0, input.1);
     println!("[{}ms] Part one: {}", start.elapsed().as_millis(), ans_one);
-    println!(
-        "[{}ms] Part two: {}",
-        start.elapsed().as_millis(),
-        part_two(&dp_table)
-    );
+    let ans_two = part_two(&dp_table);
+    println!("[{}s] Part two: {}", start.elapsed().as_secs(), ans_two);
 }
