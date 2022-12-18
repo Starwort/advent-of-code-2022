@@ -117,11 +117,15 @@ impl<T> Index<(usize, usize)> for Grid<T> {
     type Output = T;
 
     fn index(&self, (x, y): (usize, usize)) -> &Self::Output {
+        debug_assert!(x < self.width);
+        debug_assert!(y < self.data.len() / self.width);
         &self.data[y * self.width + x]
     }
 }
 impl<T> IndexMut<(usize, usize)> for Grid<T> {
     fn index_mut(&mut self, (x, y): (usize, usize)) -> &mut Self::Output {
+        debug_assert!(x < self.width);
+        debug_assert!(y < self.data.len() / self.width);
         &mut self.data[y * self.width + x]
     }
 }
@@ -131,7 +135,7 @@ fn part_one(
     start: usize,
 ) -> ([Grid<Option<usize>>; 31], usize) {
     let n_nonzero = data.iter().filter(|(rate, _)| *rate != 0).count();
-    let mut pairwise_distances = Grid::new(n_nonzero, data.len(), 0);
+    let mut pairwise_distances = Grid::new(data.len(), n_nonzero, 0);
     for from in 0..data.len() {
         for to in 0..n_nonzero {
             pairwise_distances[(from, to)] = pathfind(from, to, data);
