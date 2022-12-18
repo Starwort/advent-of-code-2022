@@ -7,4 +7,5 @@ edition = "2021"
 
 [dependencies]
 array-macro = "2.1.5"
+rayon = "1.6.1"
 text_io = "0.1.12"

@@ -1,7 +1,9 @@
 use std::collections::HashMap;
+use std::sync::atomic::{AtomicUsize, Ordering};
 use std::time::Instant;
 
 use array_macro::array;
+use rayon::prelude::{IntoParallelIterator, ParallelIterator};
 use text_io::scan;
 
 fn parse_input() -> (Vec<(usize, Vec<usize>)>, usize) {
@@ -146,8 +148,8 @@ fn part_one(
 
 fn part_two(dp_table: &[Vec<Vec<Option<usize>>>; 31]) -> usize {
     let n_nonzero = dp_table[0].len();
-    let mut answer = 0;
-    for i in 0..(1 << n_nonzero) {
+    let answer = AtomicUsize::new(0);
+    (0..(1 << n_nonzero)).into_par_iter().for_each(|i| {
         for j in (0..(1 << n_nonzero)).filter(|&j| i & j != j) {
             let Some(a) = dp_table[26].iter().filter_map(|x| x[j]).max() else {
                 continue;
@@ -155,10 +157,10 @@ fn part_two(dp_table: &[Vec<Vec<Option<usize>>>; 31]) -> usize {
             let Some(b) = dp_table[26].iter().filter_map(|x| x[i & !j]).max() else {
                 continue;
             };
-            answer = answer.max(a + b);
+            answer.fetch_max(a + b, Ordering::Relaxed);
         }
-    }
-    answer
+    });
+    answer.into_inner()
 }
 
 fn main() {
