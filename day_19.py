@@ -333,7 +333,7 @@ def part_one(data):
                         clay,
                     ),
                 )
-                continue
+                # continue
 
             insert(
                 (
@@ -453,7 +453,7 @@ def part_two(data):
                         clay,
                     ),
                 )
-                continue
+                # continue
 
             insert(
                 (
