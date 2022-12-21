@@ -54,8 +54,14 @@ def part_two(data):
         if key == "root":
             left, _, right = val.split()
             solver.add(variables[left] == variables[right])
-        solver.add(variables[key] == eval(val.replace("//", "/"), variables))
-    solver.add(variables["humn"] != 3453748220117)
+        if val.isnumeric():
+            solver.add(variables[key] == eval(val, variables))
+            continue
+        left, op, right = val.split()
+        if op != "//":
+            solver.add(variables[key] == eval(val, variables))
+        else:
+            solver.add(variables[key] * variables[right] == variables[left])
     solver.check()
     model = solver.model()
     variables.pop("__builtins__")  # wtf
