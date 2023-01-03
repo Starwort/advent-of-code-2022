@@ -30,12 +30,12 @@ impl State {
         self.time_left -= 1;
     }
 
-    #[inline(always)]
+    #[inline]
     fn may_buy_ore(&self, blueprint: &([u32; 7], u32)) -> bool {
         self.ore_robot < blueprint.1
     }
 
-    #[inline(always)]
+    #[inline]
     fn can_buy_ore(&self, blueprint: &([u32; 7], u32)) -> bool {
         let [_, ore_cost, _, _, _, _, _] = blueprint.0;
         self.ore >= ore_cost
@@ -58,13 +58,13 @@ impl State {
         Some(self)
     }
 
-    #[inline(always)]
+    #[inline]
     fn may_buy_clay(&self, blueprint: &([u32; 7], u32)) -> bool {
         let [_, _, _, _, obsidian_cost_clay, _, _] = blueprint.0;
         self.clay_robot < obsidian_cost_clay
     }
 
-    #[inline(always)]
+    #[inline]
     fn can_buy_clay(&self, blueprint: &([u32; 7], u32)) -> bool {
         let [_, _, clay_cost, _, _, _, _] = blueprint.0;
         self.ore >= clay_cost
@@ -87,13 +87,13 @@ impl State {
         Some(self)
     }
 
-    #[inline(always)]
+    #[inline]
     fn may_buy_obsidian(&self, blueprint: &([u32; 7], u32)) -> bool {
         let [_, _, _, _, _, _, geode_cost_obsidian] = blueprint.0;
         self.obsidian_robot < geode_cost_obsidian
     }
 
-    #[inline(always)]
+    #[inline]
     fn can_buy_obsidian(&self, blueprint: &([u32; 7], u32)) -> bool {
         let [_, _, _, obsidian_cost_ore, obsidian_cost_clay, _, _] = blueprint.0;
         self.ore >= obsidian_cost_ore && self.clay >= obsidian_cost_clay
@@ -117,7 +117,7 @@ impl State {
         Some(self)
     }
 
-    #[inline(always)]
+    #[inline]
     fn can_buy_geode(&self, blueprint: &([u32; 7], u32)) -> bool {
         let [_, _, _, _, _, geode_cost_ore, geode_cost_obsidian] = blueprint.0;
         self.ore >= geode_cost_ore && self.obsidian >= geode_cost_obsidian
